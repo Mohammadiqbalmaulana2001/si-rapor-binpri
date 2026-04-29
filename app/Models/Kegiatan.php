@@ -6,5 +6,28 @@ use Illuminate\Database\Eloquent\Model;
 
 class Kegiatan extends Model
 {
-    //
+    protected $table = 'kegiatans';
+
+    protected $fillable = [
+        'nama_kegiatan',
+        'kategori',
+        'deskripsi',
+        'frekuensi',
+        'hari',
+        'jam_mulai',
+        'jam_selesai',
+        'penanggung_jawab',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'jam_mulai' => 'datetime:H:i',
+        'jam_selesai' => 'datetime:H:i',
+        'is_active' => 'boolean',
+    ];
+
+    public function absensis()
+    {
+        return $this->hasMany(Absensi::class);
+    }
 }

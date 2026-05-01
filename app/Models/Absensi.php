@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
 class Absensi extends Model
 {
+    use HasUuids;
+
     protected $table = 'absensis';
 
     protected $fillable = [
@@ -24,12 +27,12 @@ class Absensi extends Model
 
     public function wargaBinaan()
     {
-        return $this->belongsTo(WargaBinaan::class);
+        return $this->belongsTo(WargaBinaan::class, 'warga_binaan_id');
     }
 
     public function kegiatan()
     {
-        return $this->belongsTo(Kegiatan::class);
+        return $this->belongsTo(Kegiatan::class, 'kegiatan_id');
     }
 
     public function pencatat()

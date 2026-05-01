@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
 class Raport extends Model
 {
+    use HasUuids;
+
     protected $table = 'raports';
 
     protected $fillable = [
@@ -37,6 +40,6 @@ class Raport extends Model
 
     public function wargaBinaan()
     {
-        return $this->belongsTo(WargaBinaan::class);
+        return $this->belongsTo(WargaBinaan::class, 'warga_binaan_id');
     }
 }

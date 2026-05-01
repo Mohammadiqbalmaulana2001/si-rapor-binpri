@@ -12,11 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('raports', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
 
-            $table->foreignId('warga_binaan_id')
-                ->constrained('warga_binaans')
-                ->cascadeOnDelete();
+            $table->uuid('warga_binaan_id');
+            $table->foreign('warga_binaan_id')->references('id')->on('warga_binaans')->onDelete('cascade');
 
             $table->year('tahun');
             $table->tinyInteger('bulan');

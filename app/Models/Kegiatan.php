@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
 class Kegiatan extends Model
 {
+    use HasUuids;
+
     protected $table = 'kegiatans';
 
     protected $fillable = [
@@ -28,6 +31,6 @@ class Kegiatan extends Model
 
     public function absensis()
     {
-        return $this->hasMany(Absensi::class);
+        return $this->hasMany(Absensi::class, 'kegiatan_id');
     }
 }

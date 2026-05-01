@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('warga_binaans', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('nama_lengkap');
             $table->string('no_register')->unique(); // Nomor Register Lapas
             $table->string('nomor_induk')->nullable();

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('kegiatans', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('nama_kegiatan'); // Sholat Dhuha, Khataman, Senam, dll
             $table->string('kategori'); // Islam, Kristen, Umum
             $table->text('deskripsi')->nullable();

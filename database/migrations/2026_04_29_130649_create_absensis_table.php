@@ -12,15 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('absensis', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
 
-            $table->foreignId('warga_binaan_id')
-                ->constrained('warga_binaans')
-                ->cascadeOnDelete();
+            $table->uuid('warga_binaan_id');
+            $table->foreign('warga_binaan_id')->references('id')->on('warga_binaans')->onDelete('cascade');
 
-            $table->foreignId('kegiatan_id')
-                ->constrained('kegiatans')
-                ->cascadeOnDelete();
+            $table->uuid('kegiatan_id');
+            $table->foreign('kegiatan_id')->references('id')->on('kegiatans')->onDelete('cascade');
 
             $table->date('tanggal');
             $table->enum('kehadiran', ['hadir', 'tidak_hadir', 'izin', 'sakit'])->default('hadir');

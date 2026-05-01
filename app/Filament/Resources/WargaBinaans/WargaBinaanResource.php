@@ -4,6 +4,7 @@ namespace App\Filament\Resources\WargaBinaans;
 
 use App\Filament\Resources\WargaBinaans\Pages\CreateWargaBinaan;
 use App\Filament\Resources\WargaBinaans\Pages\EditWargaBinaan;
+
 use App\Filament\Resources\WargaBinaans\Pages\ListWargaBinaans;
 use App\Filament\Resources\WargaBinaans\Pages\ViewWargaBinaan;
 use App\Filament\Resources\WargaBinaans\Schemas\WargaBinaanForm;
@@ -24,6 +25,11 @@ class WargaBinaanResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Users;
 
+    protected static ?string $navigationLabel = 'Warga Binaan';
+
+
+    protected static ?int $navigationSort = 1;
+
     protected static ?string $recordTitleAttribute = 'nama_lengkap';
 
     public static function form(Schema $schema): Schema
@@ -43,18 +49,13 @@ class WargaBinaanResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => ListWargaBinaans::route('/'),
-            'create' => CreateWargaBinaan::route('/create'),
-            'view' => ViewWargaBinaan::route('/{record}'),
-            'edit' => EditWargaBinaan::route('/{record}/edit'),
+            'index' => Pages\ListWargaBinaans::route('/'),
         ];
     }
 

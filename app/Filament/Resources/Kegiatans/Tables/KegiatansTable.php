@@ -61,9 +61,26 @@ class KegiatansTable
                         default    => $state,
                     }),
 
-                TextColumn::make('hari')
-                    ->label('Hari')
+                TextColumn::make('jadwal')
+                    ->label('Jadwal')
                     ->placeholder('—')
+                    ->state(function ($record) {
+                        if ($record->frekuensi === 'mingguan') {
+                            $hari = collect($record->hari)->filter()->values();
+                            return $hari->isNotEmpty()
+                                ? $hari->implode(', ')
+                                : '—';
+                        }
+
+                        if ($record->frekuensi === 'bulanan') {
+                            $tanggal = collect($record->tanggal_bulanan)->filter()->values();
+                            return $tanggal->isNotEmpty()
+                                ? 'Tgl ' . $tanggal->implode(', ')
+                                : '—';
+                        }
+
+                        return '—';
+                    })
                     ->toggleable(),
 
                 TextColumn::make('jam_mulai')

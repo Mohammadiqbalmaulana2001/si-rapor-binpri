@@ -57,7 +57,24 @@ class KegiatanInfolist
                         TextEntry::make('hari')
                             ->label('Hari Pelaksanaan')
                             ->placeholder('—')
+                            ->state(fn ($record) =>
+                                is_array($record->hari) && count(array_filter($record->hari))
+                                    ? implode(', ', array_filter($record->hari))
+                                    : '—'
+                            )
                             ->visible(fn ($record) => $record->frekuensi === 'mingguan'),
+
+                            TextEntry::make('tanggal_bulanan')
+                            ->label('Tanggal Pelaksanaan')
+                            ->placeholder('—')
+                            ->state(function ($record) {
+                                $tanggal = collect($record->tanggal_bulanan)->filter()->values();
+
+                                return $tanggal->isNotEmpty()
+                                    ? 'Setiap tanggal: ' . $tanggal->implode(', ')
+                                    : '—';
+                            })
+                            ->visible(fn ($record) => $record?->frekuensi === 'bulanan'),
 
                     ])
                     ->columns(2),

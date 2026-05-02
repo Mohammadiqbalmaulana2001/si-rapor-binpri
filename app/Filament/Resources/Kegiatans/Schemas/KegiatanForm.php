@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Kegiatans\Schemas;
 
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -52,7 +53,9 @@ class KegiatanForm
                             ->required()
                             ->live(),
 
-                        Select::make('hari')
+                        // Ganti field hari yang lama dengan ini:
+
+                        CheckboxList::make('hari')
                             ->label('Hari Pelaksanaan')
                             ->options([
                                 'Senin'  => 'Senin',
@@ -63,10 +66,36 @@ class KegiatanForm
                                 'Sabtu'  => 'Sabtu',
                                 'Minggu' => 'Minggu',
                             ])
-                            ->placeholder('Pilih hari...')
+                            ->columns([
+                                    'default' => 3,  // 📱 mobile → 3 kolom (biar nggak turun 1-1)
+                                    'sm' => 4,
+                                    'md' => 4,
+                                    'lg' => 4,
+                                ])
+                            ->gridDirection('row')
                             ->visible(fn ($get) => $get('frekuensi') === 'mingguan')
-                            ->required(fn ($get) => $get('frekuensi') === 'mingguan'),
+                            ->required(fn ($get) => $get('frekuensi') === 'mingguan')
+                            ->columnSpanFull(),
 
+                            CheckboxList::make('tanggal_bulanan')
+                                ->label('Tanggal Pelaksanaan (setiap bulan)')
+                                ->options(
+                                    collect(range(1, 31))
+                                        ->mapWithKeys(fn ($tgl) => [(string)$tgl => (string)$tgl])
+                                        ->toArray()
+                                )
+                                ->columns([
+                                    'default' => 3,  // 📱 mobile → 3 kolom (biar nggak turun 1-1)
+                                    'sm' => 4,
+                                    'md' => 6,
+                                    'lg' => 6,
+                                ])
+                                ->gridDirection('row')
+                                ->bulkToggleable()
+                                ->visible(fn ($get) => $get('frekuensi') === 'bulanan')
+                                ->required(fn ($get) => $get('frekuensi') === 'bulanan')
+                                ->helperText('Pilih tanggal berapa saja kegiatan ini diadakan setiap bulannya')
+                                ->columnSpanFull(),
                     ])
                     ->columns(2),
 

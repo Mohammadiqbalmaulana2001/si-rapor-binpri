@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('kategori'); // Islam, Kristen, Umum
             $table->text('deskripsi')->nullable();
             $table->enum('frekuensi', ['harian', 'mingguan', 'bulanan']);
-            $table->string('hari')->nullable(); // Senin, Selasa, dll (untuk mingguan)
+            $table->json('hari')->nullable();
+            $table->json('tanggal_bulanan')->nullable();
             $table->time('jam_mulai')->nullable();
             $table->time('jam_selesai')->nullable();
             $table->string('penanggung_jawab')->nullable(); // Ustad/Pendeta/Petugas

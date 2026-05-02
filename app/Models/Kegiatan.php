@@ -17,6 +17,7 @@ class Kegiatan extends Model
         'deskripsi',
         'frekuensi',
         'hari',
+        'tanggal_bulanan',
         'jam_mulai',
         'jam_selesai',
         'penanggung_jawab',
@@ -27,6 +28,8 @@ class Kegiatan extends Model
         'jam_mulai' => 'datetime:H:i',
         'jam_selesai' => 'datetime:H:i',
         'is_active' => 'boolean',
+        'hari'       => 'array',
+        'tanggal_bulanan'  => 'array',
     ];
 
     public function absensis()

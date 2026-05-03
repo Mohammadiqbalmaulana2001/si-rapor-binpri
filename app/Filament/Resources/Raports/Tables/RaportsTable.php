@@ -17,6 +17,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
+use App\Services\RaportExportService;
 use Filament\Tables\Table;
 
 class RaportsTable
@@ -154,7 +155,6 @@ class RaportsTable
             ])
 
             ->recordActions([
-
                 ViewAction::make()
                     ->modalHeading(fn ($record) =>
                         'Raport: ' . $record->wargaBinaan?->nama_lengkap .
@@ -197,6 +197,21 @@ class RaportsTable
                     )
                     ->modalSubmitActionLabel('Ya, Hapus'),
 
+                Action::make('download_pdf')
+                    ->label('PDF')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('danger')
+                    ->visible(fn ($record) => $record->is_finalized)
+                    ->url(fn ($record) => route('raports.export.pdf', $record))
+                    ->openUrlInNewTab(),
+
+                Action::make('download_excel')
+                    ->label('Excel')
+                    ->icon('heroicon-o-table-cells')
+                    ->color('success')
+                    ->visible(fn ($record) => $record->is_finalized)
+                    ->url(fn ($record) => route('raports.export.excel', $record))
+                    ->openUrlInNewTab(),
             ])
 
             ->toolbarActions([

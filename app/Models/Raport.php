@@ -27,19 +27,39 @@ class Raport extends Model
     ];
 
     protected $casts = [
-        'tahun' => 'integer',
-        'bulan' => 'integer',
-        'total_kegiatan' => 'integer',
-        'total_hadir' => 'integer',
-        'total_aktif' => 'integer',
-        'total_pasif' => 'integer',
-        'total_perlu_pembinaan' => 'integer',
-        'persentase_kehadiran' => 'decimal:2',
-        'is_finalized' => 'boolean',
+        'tahun'                  => 'integer',
+        'bulan'                  => 'integer',
+        'total_kegiatan'         => 'integer',
+        'total_hadir'            => 'integer',
+        'total_aktif'            => 'integer',
+        'total_pasif'            => 'integer',
+        'total_perlu_pembinaan'  => 'integer',
+        'persentase_kehadiran'   => 'decimal:2',
+        'is_finalized'           => 'boolean',
     ];
 
     public function wargaBinaan()
     {
         return $this->belongsTo(WargaBinaan::class, 'warga_binaan_id');
+    }
+
+    // Accessor: nama bulan
+    public function getNamaBulanAttribute(): string
+    {
+        return \Carbon\Carbon::create($this->tahun, $this->bulan, 1)
+            ->locale('id')
+            ->isoFormat('MMMM YYYY');
+    }
+
+    // Accessor: label rekomendasi
+    public function getRekomendasiLabelAttribute(): string
+    {
+        return match($this->rekomendasi) {
+            'sangat_baik' => '⭐⭐⭐ Sangat Baik',
+            'baik'        => '⭐⭐ Baik',
+            'cukup'       => '⭐ Cukup',
+            'kurang'      => '❌ Kurang',
+            default       => '—',
+        };
     }
 }

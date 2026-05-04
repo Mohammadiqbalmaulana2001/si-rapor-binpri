@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Absensis\Schemas;
 
 use App\Models\Kegiatan;
 use App\Models\WargaBinaan;
+use Illuminate\Support\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -64,6 +65,7 @@ class AbsensiForm
                             ->searchable()
                             ->preload()
                             ->required()
+                            ->live()
                             ->columnSpanFull(),
 
                         // ── TANGGAL ──
@@ -71,7 +73,10 @@ class AbsensiForm
                             ->label('Tanggal Kegiatan')
                             ->required()
                             ->default(now())
+                            ->native(false)
                             ->displayFormat('d/m/Y')
+                            ->disabledDates(fn ($get) => self::getDisabledDatesByFrequency($get('kegiatan_id')))
+                            ->helperText(fn ($get) => self::getFrequencyHint($get('kegiatan_id')))
                             ->maxDate(now()),
 
                         // ── KEHADIRAN ──
@@ -117,5 +122,51 @@ class AbsensiForm
                     ->columns(1),
 
             ]);
+    }
+
+    private static function getDisabledDatesByFrequency(?string $kegiatanId): array
+    {
+        if (! $kegiatanId) {
+            return [];
+        }
+
+        static $cache = [];
+
+        if (array_key_exists($kegiatanId, $cache)) {
+            return $cache[$kegiatanId];
+        }
+
+        $kegiatan = Kegiatan::find($kegiatanId);
+
+        if (! $kegiatan || $kegiatan->frekuensi === 'harian') {
+            return $cache[$kegiatanId] = [];
+        }
+
+        $mulai = Carbon::now()->subMonths(12)->startOfDay();
+        $sampai = Carbon::now()->endOfDay();
+        $disabledDates = [];
+
+        for ($tanggal = $mulai->copy(); $tanggal->lte($sampai); $tanggal->addDay()) {
+            if (! $kegiatan->isTanggalSesuaiFrekuensi($tanggal)) {
+                $disabledDates[] = $tanggal->toDateString();
+            }
+        }
+
+        return $cache[$kegiatanId] = $disabledDates;
+    }
+
+    private static function getFrequencyHint(?string $kegiatanId): ?string
+    {
+        if (! $kegiatanId) {
+            return 'Pilih kegiatan dulu agar tanggal mengikuti frekuensinya.';
+        }
+
+        $kegiatan = Kegiatan::find($kegiatanId);
+
+        if (! $kegiatan) {
+            return null;
+        }
+
+        return $kegiatan->getFrekuensiHint();
     }
 }

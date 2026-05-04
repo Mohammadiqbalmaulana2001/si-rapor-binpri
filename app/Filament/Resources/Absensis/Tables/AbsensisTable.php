@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Absensis\Tables;
 
+use App\Models\Kegiatan;
+use Illuminate\Support\Carbon;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -183,6 +185,10 @@ class AbsensisTable
                     })
                     // ── TAMBAHKAN BAGIAN INI ──
                     ->before(function (array $data, \Filament\Actions\EditAction $action, $record) {
+                        if (! self::validateTanggalFrekuensi($data, $action)) {
+                            return;
+                        }
+
                         $sudahAda = \App\Models\Absensi::where('warga_binaan_id', $data['warga_binaan_id'])
                             ->where('kegiatan_id', $data['kegiatan_id'])
                             ->whereDate('tanggal', $data['tanggal'])
@@ -232,6 +238,10 @@ class AbsensisTable
                 })
                 // ── TAMBAHKAN BAGIAN INI ──
                 ->before(function (array $data, \Filament\Actions\CreateAction $action) {
+                    if (! self::validateTanggalFrekuensi($data, $action)) {
+                        return;
+                    }
+
                     $sudahAda = \App\Models\Absensi::where('warga_binaan_id', $data['warga_binaan_id'])
                         ->where('kegiatan_id', $data['kegiatan_id'])
                         ->whereDate('tanggal', $data['tanggal'])
@@ -275,10 +285,43 @@ class AbsensisTable
                     ->label('Input Absensi Pertama')
                     ->modalHeading('Input Absensi Warga Binaan')
                     ->modal()
+                    ->before(function (array $data, \Filament\Actions\CreateAction $action) {
+                        self::validateTanggalFrekuensi($data, $action);
+                    })
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['dicatat_oleh'] = auth()->id();
                         return $data;
                     }),
             ]);
+    }
+
+    private static function validateTanggalFrekuensi(array $data, \Filament\Actions\Action $action): bool
+    {
+        if (blank($data['kegiatan_id'] ?? null) || blank($data['tanggal'] ?? null)) {
+            return true;
+        }
+
+        $kegiatan = Kegiatan::find($data['kegiatan_id']);
+
+        if (! $kegiatan) {
+            return true;
+        }
+
+        $tanggal = Carbon::parse($data['tanggal']);
+
+        if ($kegiatan->isTanggalSesuaiFrekuensi($tanggal)) {
+            return true;
+        }
+
+        \Filament\Notifications\Notification::make()
+            ->title('Tanggal tidak sesuai frekuensi kegiatan')
+            ->body($kegiatan->getFrekuensiHint())
+            ->danger()
+            ->persistent()
+            ->send();
+
+        $action->halt();
+
+        return false;
     }
 }

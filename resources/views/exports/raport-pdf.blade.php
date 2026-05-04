@@ -249,7 +249,7 @@
 
 {{-- ══ HEADER ══ --}}
 <div class="doc-header">
-    <h1 style="text-align: center">RAPORT PEMBINAAN WBP LAPAS NARKOTIKA KLS II A PAMEKASAN/h1>
+    <h1 style="text-align: center">RAPORT PEMBINAAN WBP LAPAS NARKOTIKA KLS II A PAMEKASAN
     <p>Dicetak pada: {{ now()->timezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</p>
 </div>
 
@@ -452,10 +452,10 @@
 </div>
 
 {{-- ══ STEMPEL ══ --}}
-<div class="stamp">
-    <span>Dicetak dari Sistem Informasi Manajemen Pembinaan</span>
+<div class="stamp" >
+    <span style="text-align: center">Dicetak dari Sistem Informasi Manajemen Pembinaan</span>
     @if($raport->is_finalized)
-        <span class="finalized">&#10003; DIFINALISASI</span>
+        <span class="finalized" style="margin-right: 10px">&#10003; LAPAS NARKOTIKA KLS II A PAMEKASAN</span>
     @endif
 </div>
 

@@ -52,7 +52,7 @@ class AdminPanelProvider extends PanelProvider
                 // FilamentInfoWidget::class,
                 KegiatanHariIniWidget::class,
                 RekapKehadiranBulanIniWidget::class,
-                RekomendasiRemisiWidget::class,
+                // RekomendasiRemisiWidget::class,
                 WargaBinaanAktifWidget::class,
             ])
             ->middleware([

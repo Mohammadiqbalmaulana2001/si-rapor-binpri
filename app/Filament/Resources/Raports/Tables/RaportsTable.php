@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Raports\Tables;
 
-use App\Models\WargaBinaan;
 use App\Services\RaportService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -17,7 +16,6 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
-use App\Services\RaportExportService;
 use Filament\Tables\Table;
 
 class RaportsTable
@@ -210,8 +208,7 @@ class RaportsTable
                     ->icon('heroicon-o-table-cells')
                     ->color('success')
                     ->visible(fn ($record) => $record->is_finalized)
-                    ->url(fn ($record) => route('raports.export.excel', $record))
-                    ->openUrlInNewTab(),
+                    ->url(fn ($record) => route('raports.export.excel', $record)),
             ])
 
             ->toolbarActions([

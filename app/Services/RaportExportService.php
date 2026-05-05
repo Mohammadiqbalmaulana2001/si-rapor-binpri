@@ -10,7 +10,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Style\Font;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class RaportExportService
@@ -49,7 +48,7 @@ class RaportExportService
     // EXCEL
     // ══════════════════════════════════════════════════
 
-    public function exportExcel(Raport $raport): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function exportExcel(Raport $raport): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $detail = RaportInfolist::getDetailKegiatan($raport);
         $wb     = $raport->wargaBinaan;
@@ -311,12 +310,21 @@ class RaportExportService
             . '_' . $raport->tahun
             . '.xlsx';
 
-        return response()->streamDownload(function () use ($spreadsheet) {
-            $writer = new Xlsx($spreadsheet);
-            $writer->save('php://output');
-        }, $filename, [
+        $tempPath = tempnam(sys_get_temp_dir(), 'raport_excel_');
+
+        if ($tempPath === false) {
+            abort(500, 'Gagal menyiapkan file Excel sementara.');
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($tempPath);
+
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet, $writer);
+
+        return response()->download($tempPath, $filename, [
             'Content-Type'        => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ]);
+        ])->deleteFileAfterSend(true);
     }
 }

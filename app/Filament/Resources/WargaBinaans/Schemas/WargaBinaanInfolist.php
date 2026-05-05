@@ -23,6 +23,7 @@ class WargaBinaanInfolist
                         ImageEntry::make('foto')
                             ->label('')
                             ->circular()
+                            ->disk('public')
                             ->defaultImageUrl(fn ($record) =>
                                 'https://ui-avatars.com/api/?name=' .
                                 urlencode($record->nama_lengkap) .

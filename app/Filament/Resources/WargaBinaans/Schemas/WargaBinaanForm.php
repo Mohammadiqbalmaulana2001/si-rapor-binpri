@@ -24,6 +24,7 @@ class WargaBinaanForm
                             ->label('Foto Warga Binaan')
                             ->image()
                             ->imageEditor()
+                            ->disk('public')
                             ->imageEditorAspectRatios(['1:1'])
                             ->directory('warga-binaan')
                             ->visibility('public')

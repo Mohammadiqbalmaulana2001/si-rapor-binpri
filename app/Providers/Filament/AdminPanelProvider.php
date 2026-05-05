@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Widgets\KegiatanHariIniWidget;
+use App\Filament\Widgets\PanduanSistemWidget;
 use App\Filament\Widgets\RekapKehadiranBulanIniWidget;
 use App\Filament\Widgets\RekomendasiRemisiWidget;
 use App\Filament\Widgets\WargaBinaanAktifWidget;
@@ -46,8 +47,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                PanduanSistemWidget::class,
+                // AccountWidget::class,
+                // FilamentInfoWidget::class,
                 KegiatanHariIniWidget::class,
                 RekapKehadiranBulanIniWidget::class,
                 RekomendasiRemisiWidget::class,
